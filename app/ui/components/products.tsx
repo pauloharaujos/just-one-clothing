@@ -10,6 +10,7 @@ export default function Page() {
                     <div className="group relative">
                         <Image 
                             src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-01.jpg"
+                            alt=""
                             className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" 
                         />
                         <div className="mt-4 flex justify-between">
