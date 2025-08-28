@@ -140,7 +140,9 @@ export default function Header() {
                                 <a href="#" className="-m-1.5 p-1.5">
                                     <span className="sr-only">Your Company</span>
                                     <Image 
-                                        src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600" 
+                                        src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=600"
+                                        width={180}
+                                        height={38}
                                         alt="" 
                                         className="h-8 w-auto" 
                                     />
