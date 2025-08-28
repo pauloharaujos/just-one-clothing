@@ -1,3 +1,5 @@
+import Image from 'next/image';
+
 export default function Page() {
     return (
         <div className="bg-white">
@@ -6,7 +8,11 @@ export default function Page() {
 
                 <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                     <div className="group relative">
-                        <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-01.jpg" alt="Front of men&#039;s Basic Tee in black." className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" />
+                        <Image 
+                            src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-01.jpg"
+                            alt=""
+                            className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" 
+                        />
                         <div className="mt-4 flex justify-between">
                             <div>
                                 <h3 className="text-sm text-gray-700">
@@ -21,7 +27,11 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="group relative">
-                        <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-02.jpg" alt="Front of men&#039;s Basic Tee in white." className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" />
+                        <Image 
+                            src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-02.jpg" 
+                            alt="" 
+                            className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" 
+                        />
                         <div className="mt-4 flex justify-between">
                             <div>
                                 <h3 className="text-sm text-gray-700">
@@ -36,7 +46,11 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="group relative">
-                        <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-03.jpg" alt="Front of men&#039;s Basic Tee in dark gray." className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" />
+                        <Image 
+                            src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-03.jpg" 
+                            alt="" 
+                            className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" 
+                        />
                         <div className="mt-4 flex justify-between">
                             <div>
                                 <h3 className="text-sm text-gray-700">
@@ -51,7 +65,11 @@ export default function Page() {
                         </div>
                     </div>
                     <div className="group relative">
-                        <img src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-04.jpg" alt="Front of men&#039;s Artwork Tee in peach with white and brown dots forming an isometric cube." className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" />
+                        <Image 
+                            src="https://tailwindcss.com/plus-assets/img/ecommerce-images/product-page-01-related-product-04.jpg" 
+                            alt="" 
+                            className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80" 
+                        />
                         <div className="mt-4 flex justify-between">
                             <div>
                                 <h3 className="text-sm text-gray-700">
