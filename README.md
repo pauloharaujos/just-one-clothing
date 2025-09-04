@@ -1,8 +1,37 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# Just One Dollar Ecommerce Platform
 
-First, run the development server:
+Welcome to **Just One Dollar**, a modern ecommerce platform built with [Next.js](https://nextjs.org). This project aims to deliver a seamless shopping experience with robust product management, category organization, and flexible payment integration.
+
+## 🚀 Features
+
+- **Product Management:** Add, edit, and display products with images and details.
+- **Category Management:** Organize products into categories for easy browsing.
+- **Payment Integration:** Configure payment methods for secure transactions.
+- **Homepage:** Engaging banners and featured products.
+- **Product Listing Page (PLP):** Browse products by category.
+- **Product Detail Page (PDP):** View detailed product information.
+- **Checkout:** Streamlined checkout flow for purchases.
+- **Login & Account:** User authentication and account management.
+
+## 🛠️ Tech Stack
+
+- [Next.js](https://nextjs.org) – React framework for fast, scalable web apps
+- [TailwindCSS](https://tailwindcss.com) – Utility-first CSS for rapid UI development
+- [Prisma](https://www.prisma.io) – ORM for database management
+- [TypeScript](https://www.typescriptlang.org) – Type-safe development
+
+## 📦 Getting Started
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/pauloharaujos/just-one-dollar.git
+cd just-one-dollar
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
@@ -14,23 +43,23 @@ pnpm dev
 bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧩 Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `app/` – Main application pages and UI components
+- `prisma/` – Database schema and Prisma client
+- `public/` – Static assets (images, icons)
+- `repository/` – Data access logic
 
-## Learn More
+## 🤝 Contributing
 
-To learn more about Next.js, take a look at the following resources:
+Contributions are welcome! Please open issues or submit pull requests to help improve the platform.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 📄 License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is licensed under the MIT License.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Made with ❤️ by [pauloharaujos](https://github.com/pauloharaujos)
