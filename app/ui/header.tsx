@@ -1,11 +1,14 @@
 "use client";
+
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useSession } from "next-auth/react";
 
 export default function Header() {
-    // Mobile menu state
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
+    const { data: session } = useSession();
+    const isLoggedIn = session;
 
     return (
         <header className="bg-white border-b border-gray-200 shadow-sm">
@@ -66,9 +69,11 @@ export default function Header() {
                         </div>
                     ))}
                 </div>
-                {/* Log in button */}
+                {/* Log in / My Account button */}
                 <div className="hidden lg:flex items-center justify-end flex-1">
-                    <Link href="/customer/account/login" className="text-sm font-semibold text-gray-900 flex items-center gap-1">Log in <span aria-hidden="true">&rarr;</span></Link>
+                    <Link href={isLoggedIn ? "/customer/account" : "/customer/login"} className="text-sm font-semibold text-gray-900 flex items-center gap-1">
+                        {isLoggedIn ? "My Account" : "Log in"} <span aria-hidden="true">&rarr;</span>
+                    </Link>
                 </div>
             </nav>
             {/* Mobile menu */}
@@ -116,7 +121,7 @@ export default function Header() {
                         <a href="#" className="text-sm font-semibold text-gray-900">Features</a>
                         <a href="#" className="text-sm font-semibold text-gray-900">Marketplace</a>
                         <a href="#" className="text-sm font-semibold text-gray-900">Company</a>
-                        <Link href="/customer/account/login" className="text-sm font-semibold text-gray-900">Log in <span aria-hidden="true">&rarr;</span></Link>
+                        <Link href={isLoggedIn ? "/customer/account" : "/customer/login"} className="text-sm font-semibold text-gray-900">{isLoggedIn ? "My Account" : "Log in"} <span aria-hidden="true">&rarr;</span></Link>
                     </nav>
                 </div>
             </div>

@@ -1,3 +1,30 @@
 {
-    "typescript.tsdk": "node_modules/typescript/lib"
+    "typescript.tsdk": "node_modules/typescript/lib",
+        // Editor settings
+    //"editor.fontFamily": "JetBrains Mono", // Set preferred font family
+    "editor.fontSize": 15, // Set font size
+    "editor.lineHeight": 1.3, // Adjust line height
+    "editor.tabSize": 4, // Set tab size in spaces
+    "editor.insertSpaces": true, // Use spaces instead of tabs
+    //"editor.renderWhitespace": "all", // Show whitespace characters
+    "editor.wordWrap": "on", // Enable word wrap
+    "editor.minimap.enabled": false, // Disable minimap
+    "editor.multiCursorModifier": "ctrlCmd",
+
+    // Workbench settings
+    "workbench.colorTheme": "Visual Studio Dark", // Set color theme
+    "workbench.iconTheme": "symbols", // Set file icon theme
+    "workbench.statusBar.visible": true, // Show status bar
+    //"workbench.activityBar.location": "hidden", // Hide activity bar
+    "window.zoomLevel": 0.1, // Adjust UI zoom level
+
+    // Files settings
+    "files.autoSave": "afterDelay", // Auto-save files after a delay
+    "files.autoSaveDelay": 1000, // Delay in milliseconds for auto-save
+
+    // Language-specific settings (example for Python)
+    "[python]": {
+        "editor.tabSize": 4,
+        "editor.insertSpaces": true
+    }
 }
