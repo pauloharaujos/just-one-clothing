@@ -1,7 +1,7 @@
 
 import Form from 'next/form';
 import Image from 'next/image';
-import { signIn, signOut, auth } from "@/auth"
+import { signIn, auth } from "@/auth"
 import { redirect } from 'next/navigation';
 
 export default async function LoginForm() {

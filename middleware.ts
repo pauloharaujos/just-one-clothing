@@ -1,19 +1,19 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
-import { auth } from '@/auth';
+import { getToken } from "next-auth/jwt"
 
-const protectedPaths = ['/orders'];
+const protectedPaths = ['/orders', '/customer/account'];
 
 export async function middleware(request: NextRequest) {
-    const session = await auth();
+    const token = await getToken({ req: request, secret: process.env.AUTH_SECRET })
     const { pathname } = request.nextUrl
 
     const isProtectedPath = protectedPaths.some((route) =>
         pathname.startsWith(route)
     );
 
-    if (isProtectedPath && !session) {
-        return NextResponse.redirect(new URL("/customer/account/login", request.url));
+    if (isProtectedPath && !token) {
+        return NextResponse.redirect(new URL("/customer/login", request.url));
     }
 
     return NextResponse.next();
