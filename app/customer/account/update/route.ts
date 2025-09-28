@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { updateCustomerInfo } from '@/app/repository/customerRepository';
+import { updateCustomerInfo } from '@/repository/customerRepository';
 import { auth } from '@/auth';
 
 export async function POST(request: NextRequest) {

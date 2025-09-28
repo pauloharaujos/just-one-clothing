@@ -1,11 +1,11 @@
 
-import Header from "@/app/ui/header";
-import Footer from "@/app/ui/footer";
-import TopBanner from '@/app/ui/cms/top-banner';
-import Sidebar from "@/app/ui/components/account/Sidebar";
-import CustomerInfo from "@/app/ui/components/account/CustomerInfo";
+import Header from "@/ui/components/header";
+import Footer from "@/ui/components/footer";
+import TopBanner from '@/ui/cms/top-banner';
+import Sidebar from "@/ui/components/customer/account/Sidebar";
+import CustomerInfo from "@/ui/components/customer/account/CustomerInfo";
 import { auth } from '@/auth';
-import { getCustomerByEmail } from '@/app/repository/customerRepository';
+import { getCustomerByEmail } from '@/repository/customerRepository';
 
 export default async function AccountPage() {
   const session = await auth();

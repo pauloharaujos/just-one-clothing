@@ -64,7 +64,7 @@ export default async function LoginForm() {
                     </div>
                     <p className="mt-8 text-center text-sm text-gray-500">
                         Not a member?{' '}
-                        <a href="#" className="font-semibold text-indigo-600 hover:text-indigo-500">Start a 14 day free trial</a>
+                        <a href="/customer/create" className="font-semibold text-indigo-600 hover:text-indigo-500">Create an account</a>
                     </p>
                 </div>
             </div>

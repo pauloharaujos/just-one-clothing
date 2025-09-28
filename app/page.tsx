@@ -1,8 +1,8 @@
-import Header from '@/app/ui/header';
-import Footer from '@/app/ui/footer';
-import TopBanner from '@/app/ui/cms/top-banner';
-import HomeBanner from '@/app/ui/cms/home-banner';
-import Products from '@/app/ui/components/products';
+import Header from '@/ui/components/header';
+import Footer from '@/ui/components/footer';
+import TopBanner from '@/ui/cms/top-banner';
+import HomeBanner from '@/ui/cms/home-banner';
+import Products from '@/ui/components/home/products';
 
 export default function Home() {
   return (
