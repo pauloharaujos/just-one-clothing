@@ -1,6 +1,6 @@
 
-import Header from "@/ui/components/header";
-import Footer from "@/ui/components/footer";
+import Header from "@/ui/components/Header";
+import Footer from "@/ui/components/Footer";
 import TopBanner from '@/ui/cms/top-banner';
 import Sidebar from "@/ui/components/customer/account/Sidebar";
 import CustomerInfo from "@/ui/components/customer/account/CustomerInfo";
