@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import Image from "next/image";
 import { signIn } from "next-auth/react";
@@ -19,13 +20,33 @@ export default function CreateAccountForm() {
     setConfirmPassword(e.target.value);
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const name = formData.get("name");
+    const email = formData.get("email");
+
     if (password !== confirmPassword) {
       alert("Passwords do not match.");
       return;
     }
-    // Add your submit logic here
+
+    try {
+      const res = await fetch("/api/customer/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, email, password }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        alert(data.error || "Failed to create account.");
+        return;
+      }
+      // Success: redirect to login
+      window.location.href = "/customer/login";
+    } catch (err) {
+      alert("Something went wrong. Please try again.");
+    }
   }
 
   return (
