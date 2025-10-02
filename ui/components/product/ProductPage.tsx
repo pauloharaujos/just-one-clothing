@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import { formatCurrency } from '@/lib/utils';
 
 interface ProductPageProps {
   product: {
@@ -13,14 +14,6 @@ interface ProductPageProps {
       };
     }>;
   };
-}
-
-function formatCurrency(value: number) {
-  try {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-  } catch {
-    return `$${value.toFixed(2)}`;
-  }
 }
 
 export default function ProductPage({ product }: ProductPageProps) {

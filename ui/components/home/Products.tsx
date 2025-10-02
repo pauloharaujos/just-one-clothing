@@ -1,14 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { getRecommendedProducts } from '@/repository/productRepository';
-
-function formatCurrency(value: number) {
-  try {
-    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
-  } catch {
-    return `$${value.toFixed(2)}`;
-  }
-}
+import { formatCurrency } from '@/lib/utils';
 
 export default async function Products() {
     const products = await getRecommendedProducts(4);
