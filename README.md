@@ -1,65 +1,98 @@
+# Just One Dollar - Ecommerce Platform
 
-# Just One Dollar Ecommerce Platform
+A modern ecommerce platform built with Next.js 15+, featuring product management, user authentication, and a clean, responsive design.
 
-Welcome to **Just One Dollar**, a modern ecommerce platform built with [Next.js](https://nextjs.org). This project aims to deliver a seamless shopping experience with robust product management, category organization, and flexible payment integration.
+## 🚀 Tech Stack
 
-## 🚀 Features
+- **Framework**: Next.js 15+ (App Router)
+- **Language**: TypeScript
+- **Database**: PostgreSQL with Prisma ORM
+- **Authentication**: NextAuth.js
+- **Styling**: Tailwind CSS
+- **Deployment**: Vercel (recommended)
 
-- **Product Management:** Add, edit, and display products with images and details.
-- **Category Management:** Organize products into categories for easy browsing.
-- **Payment Integration:** Configure payment methods for secure transactions.
-- **Homepage:** Engaging banners and featured products.
-- **Product Listing Page (PLP):** Browse products by category.
-- **Product Detail Page (PDP):** View detailed product information.
-- **Checkout:** Streamlined checkout flow for purchases.
-- **Login & Account:** User authentication and account management.
+## ✨ Features
 
-## 🛠️ Tech Stack
+- **Product Management**: Dynamic product pages with SEO-friendly URLs
+- **User Authentication**: Secure login/registration system
+- **Responsive Design**: Mobile-first approach with modern UI
+- **Image Management**: Organized product image storage
+- **404 Handling**: Custom not-found pages
 
-- [Next.js](https://nextjs.org) – React framework for fast, scalable web apps
-- [TailwindCSS](https://tailwindcss.com) – Utility-first CSS for rapid UI development
-- [Prisma](https://www.prisma.io) – ORM for database management
-- [TypeScript](https://www.typescriptlang.org) – Type-safe development
+## 🏗️ Project Structure
 
-## 📦 Getting Started
+```
+├── app/                    # Next.js App Router
+│   ├── (catalog)/         # Route groups
+│   ├── customer/          # User authentication pages
+│   └── globals.css        # Global styles
+├── ui/components/         # Reusable UI components
+├── repository/           # Database access layer
+├── prisma/              # Database schema and migrations
+├── public/              # Static assets
+│   └── product/images/   # Product images organized by ID
+└── docs/                # Detailed documentation
+```
 
-Clone the repository and install dependencies:
+## 🚀 Quick Start
 
+### Prerequisites
+- Node.js 18+
+- PostgreSQL database
+
+### Installation
 ```bash
-git clone https://github.com/pauloharaujos/just-one-dollar.git
+# Clone the repository
+git clone <your-repo-url>
 cd just-one-dollar
+
+# Install dependencies
 npm install
-```
 
-Run the development server:
+# Set up environment variables
+cp .env.example .env.local
+# Edit .env.local with your database URL and other configs
 
-```bash
+# Set up database
+npx prisma generate
+npx prisma db push
+
+# Start development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the app.
+Visit `http://localhost:3000` to see the application.
 
-## 🧩 Project Structure
+## 📚 Documentation
 
-- `app/` – Main application pages and UI components
-- `prisma/` – Database schema and Prisma client
-- `public/` – Static assets (images, icons)
-- `repository/` – Data access logic
+For detailed documentation, see the [docs/](./docs/) folder:
+
+- **[Architecture Overview](./docs/architecture.md)** - Database schema, file structure, and technical implementation
+- **[Product Management](./docs/product-management.md)** - How products and images are stored and managed
+- **[API Reference](./docs/api-reference.md)** - Repository functions and data access patterns
+- **[Development Guide](./docs/development.md)** - Best practices and conventions
+
+## 🔮 Roadmap
+
+- [ ] Shopping cart functionality
+- [ ] Order management system
+- [ ] Product categories and filtering
+- [ ] Search functionality
+- [ ] Admin dashboard
+- [ ] Payment integration
 
 ## 🤝 Contributing
 
-Contributions are welcome! Please open issues or submit pull requests to help improve the platform.
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
 
 ## 📄 License
 
-This project is licensed under the MIT License.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ---
 
-Made with ❤️ by [pauloharaujos](https://github.com/pauloharaujos)
+*Built with ❤️ using Next.js and modern web technologies*
