@@ -8,15 +8,6 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model Product {
-  id Int @id @default(autoincrement())
-  name String
-  sku String
-  description String
-  price Float
-  visible Boolean @default(true)
-}
-
 model User {
   id            String          @id @default(cuid())
   name          String?
@@ -89,4 +80,35 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@id([userId, credentialID])
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String
+  sku String
+  url String @unique
+  description String
+  price Float
+  visible Boolean @default(true)
+  productImageLinks ProductImageLink[]
+}
+
+model Image {
+  id Int @id @default(autoincrement())
+  filename String
+  altText String?
+  type String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  productImageLinks ProductImageLink[]
+}
+
+model ProductImageLink {
+  productId Int
+  imageId Int
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  @@id([productId, imageId])
+  @@index([productId])
+  @@index([imageId])
 }
