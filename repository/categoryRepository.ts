@@ -130,19 +130,17 @@ export async function getCategoryBreadcrumb(categoryId: number): Promise<Categor
   if (!category) return [];
 
   const breadcrumb: Category[] = [];
-  let current = category;
+  let current: Category | null = category;
 
   while (current) {
     breadcrumb.unshift(current);
     if (current.parent) {
-      const parentCategory = await prisma.category.findUnique({
+      const parentCategory: Category | null = await prisma.category.findUnique({
         where: { id: current.parent.id },
         include: { parent: true },
       });
-      // @ts-ignore - Type assertion needed for breadcrumb logic
-      current = parentCategory || null;
+      current = parentCategory;
     } else {
-      // @ts-ignore - Type assertion needed for breadcrumb logic
       current = null;
     }
   }
