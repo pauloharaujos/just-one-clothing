@@ -167,8 +167,8 @@ export class MetadataService {
     }
 
     return product.productImageLinks
-      .slice(0, 4) // Limit to 4 images for Open Graph
-      .map((link: any) => link.image.filename)
+      .slice(0, 4)
+      .map((link) => link.image.filename)
       .filter(Boolean);
   }
 
