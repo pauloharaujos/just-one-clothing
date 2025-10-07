@@ -11,6 +11,17 @@ export async function getProductByUrlKey(productUrlKey: string) {
   });
 }
 
+export async function getProductById(id: number) {
+  return prisma.product.findUnique({
+    where: { id },
+    include: {
+      productImageLinks: {
+        include: { image: true }
+      }
+    }
+  });
+}
+
 export async function getRecommendedProducts(limit: number = 4) {
   return prisma.product.findMany({
     where: { visible: true },

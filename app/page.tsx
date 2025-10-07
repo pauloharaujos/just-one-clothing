@@ -1,4 +1,4 @@
-import Header from '@/ui/components/Header';
+import HeaderWrapper from '@/ui/components/HeaderWrapper';
 import Footer from '@/ui/components/Footer';
 import TopBanner from '@/ui/cms/top-banner';
 import HomeBanner from '@/ui/cms/home-banner';
@@ -8,7 +8,7 @@ export default function Home() {
   return (
     <div>
       <TopBanner/>
-      <Header />
+      <HeaderWrapper />
       <HomeBanner />
       <Products />
       <Footer />

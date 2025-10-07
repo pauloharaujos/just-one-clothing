@@ -4,8 +4,13 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useSession } from "next-auth/react";
+import { Category } from '@/repository/categoryRepository';
 
-export default function Header() {
+interface HeaderProps {
+  categories: Category[];
+}
+
+export default function Header({ categories }: HeaderProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
     const { data: session } = useSession();
     const isLoggedIn = session;
@@ -41,31 +46,33 @@ export default function Header() {
                 </div>
                 {/* Navigation for desktop */}
                 <div className="hidden lg:flex flex-1 items-center justify-center gap-8">
-                    {/* Cheap product categories with dropdowns */}
-                    {[
-                        { name: "Kitchen", children: ["Utensils", "Storage", "Cups & Plates", "Cleaning Cloths"] },
-                        { name: "Cleaning", children: ["Detergents", "Sponges", "Brushes", "Trash Bags"] },
-                        { name: "Party Supplies", children: ["Balloons", "Cups", "Decorations", "Candles"] },
-                        { name: "Stationery", children: ["Pens", "Notebooks", "Folders", "Tape"] },
-                        { name: "Snacks", children: ["Chips", "Candy", "Cookies", "Drinks"] }
-                    ].map((cat, idx) => (
-                        <div key={cat.name} className="relative group">
-                            <button className="flex items-center gap-1 text-sm font-semibold text-gray-900 focus:outline-none">
-                                {cat.name}
-                                <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="size-5 text-gray-400">
-                                    <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" />
-                                </svg>
-                            </button>
+                    {/* Product categories with dropdowns */}
+                    {categories.map((category) => (
+                        <div key={category.id} className="relative group">
+                            <Link href={`/${category.url}`} className="flex items-center gap-1 text-sm font-semibold text-gray-900 hover:text-gray-700 focus:outline-none">
+                                {category.name}
+                                {category.children.length > 0 && (
+                                    <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="size-5 text-gray-400">
+                                        <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" />
+                                    </svg>
+                                )}
+                            </Link>
                             {/* Dropdown - hidden by default, show on hover */}
-                            <div className="absolute left-0 top-full z-10 mt-2 w-64 rounded-xl bg-white shadow-lg border border-gray-100 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-opacity">
-                                <div className="p-4 grid gap-2">
-                                    {cat.children.map(child => (
-                                        <a key={child} href="#" className="block rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-50">
-                                            {child}
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
+                            {category.children.length > 0 && (
+                                <>
+                                    {/* Invisible bridge to prevent hover loss */}
+                                    <div className="absolute left-0 top-full w-full h-2 opacity-0 group-hover:opacity-100"></div>
+                                    <div className="absolute left-0 top-full z-10 mt-2 w-64 rounded-xl bg-white shadow-lg border border-gray-100 opacity-0 group-hover:opacity-100 pointer-events-none group-hover:pointer-events-auto transition-all duration-200">
+                                        <div className="p-4 grid gap-2">
+                                            {category.children.map(child => (
+                                                <Link key={child.id} href={`/${child.url}`} className="block rounded-lg p-2 text-sm text-gray-700 hover:bg-gray-50">
+                                                    {child.name}
+                                                </Link>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     ))}
                 </div>
@@ -96,31 +103,22 @@ export default function Header() {
                         </button>
                     </div>
                     <nav className="flex flex-col gap-4">
-                        {/* Cheap product categories with dropdowns for mobile */}
-                        {[
-                            { name: "Kitchen", children: ["Utensils", "Storage", "Cups & Plates", "Cleaning Cloths"] },
-                            { name: "Cleaning", children: ["Detergents", "Sponges", "Brushes", "Trash Bags"] },
-                            { name: "Party Supplies", children: ["Balloons", "Cups", "Decorations", "Candles"] },
-                            { name: "Stationery", children: ["Pens", "Notebooks", "Folders", "Tape"] },
-                            { name: "Snacks", children: ["Chips", "Candy", "Cookies", "Drinks"] }
-                        ].map(cat => (
-                            <details key={cat.name}>
+                        {/* Product categories with dropdowns for mobile */}
+                        {categories.map(category => (
+                            <details key={category.id}>
                                 <summary className="flex items-center gap-2 text-sm font-semibold text-gray-900 cursor-pointer">
-                                    {cat.name}
+                                    {category.name}
                                     <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" className="size-5 text-gray-400">
                                         <path d="M5.22 8.22a.75.75 0 0 1 1.06 0L10 11.94l3.72-3.72a.75.75 0 1 1 1.06 1.06l-4.25 4.25a.75.75 0 0 1-1.06 0L5.22 9.28a.75.75 0 0 1 0-1.06Z" />
                                     </svg>
                                 </summary>
                                 <div className="pl-4 pt-2 flex flex-col gap-2">
-                                    {cat.children.map(child => (
-                                        <a key={child} href="#" className="text-sm text-gray-700 py-1">{child}</a>
+                                    {category.children.map(child => (
+                                        <Link key={child.id} href={`/${child.url}`} className="text-sm text-gray-700 py-1">{child.name}</Link>
                                     ))}
                                 </div>
                             </details>
                         ))}
-                        <a href="#" className="text-sm font-semibold text-gray-900">Features</a>
-                        <a href="#" className="text-sm font-semibold text-gray-900">Marketplace</a>
-                        <a href="#" className="text-sm font-semibold text-gray-900">Company</a>
                         <Link href={isLoggedIn ? "/customer/account" : "/customer/login"} className="text-sm font-semibold text-gray-900">{isLoggedIn ? "My Account" : "Log in"} <span aria-hidden="true">&rarr;</span></Link>
                     </nav>
                 </div>
