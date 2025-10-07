@@ -1,5 +1,5 @@
 
-import Header from "@/ui/components/Header";
+import HeaderWrapper from "@/ui/components/HeaderWrapper";
 import Footer from "@/ui/components/Footer";
 import TopBanner from '@/ui/cms/top-banner';
 import Sidebar from "@/ui/components/customer/account/Sidebar";
@@ -18,7 +18,7 @@ export default async function AccountPage() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <TopBanner />
-      <Header />
+      <HeaderWrapper />
       <div className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-12 flex">
         <Sidebar />
         <main className="flex-1 p-8">
