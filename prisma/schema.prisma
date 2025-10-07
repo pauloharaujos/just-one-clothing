@@ -91,6 +91,7 @@ model Product {
   price Float
   visible Boolean @default(true)
   productImageLinks ProductImageLink[]
+  productCategories ProductCategory[]
 }
 
 model Image {
@@ -111,4 +112,49 @@ model ProductImageLink {
   @@id([productId, imageId])
   @@index([productId])
   @@index([imageId])
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  url String @unique
+  description String?
+  parentId Int?
+  parent Category? @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children Category[] @relation("CategoryHierarchy")
+  visible Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  productCategories ProductCategory[]
+}
+
+model ProductCategory {
+  productId Int
+  categoryId Int
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@id([productId, categoryId])
+  @@index([productId])
+  @@index([categoryId])
+}
+
+model UrlRewrite {
+  id Int @id @default(autoincrement())
+  requestPath String @unique
+  targetType UrlTargetType
+  targetId Int
+  targetPath String?
+  redirectType Int?
+  isCanonical Boolean @default(true)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UrlTargetType {
+  PRODUCT
+  CATEGORY
 }
