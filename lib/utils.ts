@@ -14,7 +14,6 @@ export function formatCurrency(value: number): string {
       currency: 'USD' 
     }).format(value);
   } catch {
-    // Fallback to simple formatting if Intl.NumberFormat fails
     return `$${value.toFixed(2)}`;
   }
 }
