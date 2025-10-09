@@ -22,6 +22,7 @@ model User {
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
+  quotes        Quote[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -92,6 +93,7 @@ model Product {
   visible Boolean @default(true)
   productImageLinks ProductImageLink[]
   productCategories ProductCategory[]
+  quoteItems QuoteItem[]
 }
 
 model Image {
@@ -157,4 +159,35 @@ model UrlRewrite {
 enum UrlTargetType {
   PRODUCT
   CATEGORY
+}
+
+model Quote {
+  id         Int      @id @default(autoincrement())
+  userId     String?
+  guestToken String?  @unique
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  user       User?        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quoteItems QuoteItem[]
+  
+  @@index([userId])
+  @@index([guestToken])
+}
+
+model QuoteItem {
+  id        Int     @id @default(autoincrement())
+  quoteId   Int
+  productId Int
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  quote   Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([quoteId])
+  @@index([productId])
 }
