@@ -307,6 +307,19 @@ export async function mergeGuestQuoteToUser(
 }
 
 /**
+ * Deactivate user cart (mark quotes as inactive)
+ */
+export async function deactivateUserCart(userId: string) {
+  await prisma.quote.updateMany({
+    where: { 
+      userId,
+      isActive: true 
+    },
+    data: { isActive: false }
+  });
+}
+
+/**
  * Generate a unique guest token
  */
 function generateGuestToken(): string {
