@@ -20,7 +20,7 @@ export interface CartResult {
 /**
  * Get the current cart
  */
-export async function getCart(): Promise<QuoteWithItems | null> {
+export async function getCart(): Promise<QuoteWithItems> {
   try {
     const session = await auth();
     const userId = session?.user?.id;
@@ -35,7 +35,7 @@ export async function getCart(): Promise<QuoteWithItems | null> {
     return quote;
   } catch (error) {
     console.error('Error getting cart:', error);
-    return null;
+    throw new Error('Failed to get cart');
   }
 }
 
