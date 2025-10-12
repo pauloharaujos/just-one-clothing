@@ -23,6 +23,8 @@ model User {
   // Optional for WebAuthn support
   Authenticator Authenticator[]
   quotes        Quote[]
+  addresses     Address[]
+  orders        Order[]
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -94,6 +96,7 @@ model Product {
   productImageLinks ProductImageLink[]
   productCategories ProductCategory[]
   quoteItems QuoteItem[]
+  orderItems OrderItem[]
 }
 
 model Image {
@@ -190,4 +193,76 @@ model QuoteItem {
   
   @@index([quoteId])
   @@index([productId])
+}
+
+model Address {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  firstName    String
+  lastName     String
+  company      String?
+  street1      String
+  street2      String?
+  city         String
+  state        String
+  postalCode   String
+  country      String   @default("US")
+  phone        String
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  billingOrders  Order[] @relation("BillingAddress")
+  shippingOrders Order[] @relation("ShippingAddress")
+  
+  @@index([userId])
+}
+
+model Order {
+  id                  Int      @id @default(autoincrement())
+  orderNumber         String   @unique
+  userId              String
+  billingAddressId    Int
+  shippingAddressId   Int
+  subtotal            Float
+  tax                 Float
+  total               Float
+  status              OrderStatus @default(PENDING)
+  stripeSessionId     String?
+  stripePaymentIntent String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  user            User        @relation(fields: [userId], references: [id])
+  billingAddress  Address     @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  shippingAddress Address     @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  orderItems      OrderItem[]
+  
+  @@index([userId])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Float
+  name      String
+  sku       String
+  createdAt DateTime @default(now())
+  
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  
+  @@index([orderId])
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+  REFUNDED
 }
