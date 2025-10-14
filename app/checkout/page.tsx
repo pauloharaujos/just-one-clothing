@@ -26,7 +26,7 @@ export default async function CheckoutPage() {
         </div>
 
         <CheckoutContainer 
-          cart={checkoutData}
+          checkout={checkoutData}
         />
       </main>
       <Footer />
