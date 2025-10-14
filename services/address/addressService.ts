@@ -16,20 +16,19 @@ export async function getAddressesByUserId(userId: string): Promise<Address[]> {
  */
 export async function saveAddress(
   userId: string,
-  addressId: CreateAddressData
+  addressData: CreateAddressData
 ): Promise<Address> {
-
-  if (addressId.id) {
-    const address = await addressRepository.getAddressById(addressId.id, userId);
+  if (addressData.id) {
+    const address = await addressRepository.getAddressById(addressData.id, userId);
 
     if (!address) {
       throw new Error('Address not found');
     }
 
-    await addressRepository.updateAddress(addressId.id, addressId);
+    return await addressRepository.updateAddress(addressData.id, addressData);
   }
 
-  return await addressRepository.createAddress(addressId);
+  return await addressRepository.createAddress({ ...addressData, userId });
 }
 
 /**
