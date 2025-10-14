@@ -1,4 +1,4 @@
-import { QuoteItem } from '@/prisma/generated/client';
+import { Prisma, QuoteItem } from '@/prisma/generated/client';
 import prisma from '@/prisma/prismaClient';
 import { randomBytes } from 'crypto';
 
@@ -6,32 +6,33 @@ export interface BatchPayload {
   count: number
 }
 
-export interface QuoteWithItems {
-  id: number;
-  userId: string | null;
-  guestToken: string | null;
-  isActive: boolean;
-  createdAt: Date;
-  updatedAt: Date;
-  quoteItems: Array<{
-    id: number;
-    quantity: number;
-    price: number;
+export type QuoteWithItems = Prisma.QuoteGetPayload<{
+  include: {
+    quoteItems: {
+      include: {
+        product: {
+          include: {
+            productImageLinks: {
+              include: { image: true }
+            }
+          }
+        }
+      }
+    }
+  };
+}>;
+
+export type QuoteItemWithProduct = Prisma.QuoteItemGetPayload<{
+  include: {
     product: {
-      id: number;
-      name: string;
-      sku: string;
-      url: string;
-      price: number;
-      productImageLinks: Array<{
-        image: {
-          filename: string;
-          altText: string | null;
-        };
-      }>;
-    };
-  }>;
-}
+      include: {
+        productImageLinks: {
+          include: { image: true }
+        }
+      }
+    }
+  };
+}>;
 
 /**
  * Get an existing quote for a user or guest
