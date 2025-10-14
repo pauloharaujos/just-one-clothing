@@ -3,25 +3,28 @@
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
-import { getCart } from '@/app/cart/actions/cartActions';
 import { 
-  getAddressesByUserId,
   deleteAddress,
   saveAddress as saveAddressService 
-} from '@/services/address';
-import { createCheckoutSession, getCheckoutDataService, CheckoutData } from '@/services/checkout/checkoutService';
+} from '@/services/address/addressService';
+import { getCheckoutDataService, CheckoutData } from '@/services/checkout/checkoutService';
 import { getCustomerByEmail } from '@/repository/customerRepository';
-import { CreateAddressData } from '@/services/address';
+import { CreateAddressData } from '@/services/address/addressService';
 
 /**
  * Get checkout data for a user
  */
 export async function getCheckoutData(): Promise<CheckoutData> {
   const session = await auth();
-  const customer = await getCustomerByEmail(session?.user?.email || '');
-  
-  if (!session?.user?.email || !customer?.id) {
+    
+  if (!session?.user?.email) {
     redirect('/customer/login?callbackUrl=/checkout');
+  }
+
+  const customer = await getCustomerByEmail(session?.user?.email);
+
+  if (!customer?.id) {
+    throw new Error('User not authenticated');
   }
 
   try {
@@ -45,13 +48,19 @@ export async function saveAddress(
   addressData: CreateAddressData
 ): Promise<{ success: boolean; error?: string }> {
   const session = await auth();
-  
-  if (!session?.user?.id) {
+
+  if (!session?.user?.email) {
+    throw new Error('User not authenticated');
+  }
+
+  const customer = await getCustomerByEmail(session?.user?.email);
+
+  if (!customer?.id) {
     throw new Error('User not authenticated');
   }
 
   try {
-    await saveAddressService(session.user.id, addressData);
+    await saveAddressService(customer.id, addressData);
     revalidatePath('/checkout');
 
     return { success: true };
@@ -69,12 +78,18 @@ export async function deleteAddressAction(
 ): Promise<{ success: boolean; error?: string }> {
   const session = await auth();
   
-  if (!session?.user?.id) {
+  if (!session?.user?.email) {
+    throw new Error('User not authenticated');
+  }
+
+  const customer = await getCustomerByEmail(session?.user?.email);
+
+  if (!customer?.id) {
     throw new Error('User not authenticated');
   }
 
   try {
-    await deleteAddress(addressId, session.user.id);
+    await deleteAddress(addressId, customer.id);
     revalidatePath('/checkout');
 
     return { success: true };
@@ -84,50 +99,18 @@ export async function deleteAddressAction(
   }
 }
 
-export async function createCheckoutSession(
-  billingAddressId: number,
-  shippingAddressId: number
-): Promise<{ success: boolean; sessionUrl?: string; orderNumber?: string; error?: string }> {
-  const session = await auth();
-  
-  if (!session?.user?.id) {
-    throw new Error('User not authenticated');
-  }
-
+/**
+ * Proceed to payment
+ */
+export async function placeOrder(
+  shippingAddressId: number,
+  billingAddressId: number
+): Promise<{ success: boolean; error?: string }> {
   try {
-    const cart = await getCart();
-
-    if (!cart || cart.quoteItems.length === 0) {
-      throw new Error('Cart is empty');
-    }
-
-    const [billingAddress, shippingAddress] = await Promise.all([
-      getAddressesByUserId(session.user.id).then(addresses => 
-        addresses.find(addr => addr.id === billingAddressId)
-      ),
-      getAddressesByUserId(session.user.id).then(addresses => 
-        addresses.find(addr => addr.id === shippingAddressId)
-      )
-    ]);
-
-    if (!billingAddress || !shippingAddress) {
-      throw new Error('Invalid addresses');
-    }
-
-    // Use checkout service to create checkout session
-    const result = await createCheckoutSession({
-      userId: session.user.id,
-      userEmail: session.user.email,
-      billingAddressId,
-      shippingAddressId
-    });
-
-    return result;
+    await validateCheckout(shippingAddressId, billingAddressId);
+    return { success: true };
   } catch (error) {
-    console.error('Error creating checkout session:', error);
-    return { 
-      success: false, 
-      error: error instanceof Error ? error.message : 'Failed to create checkout session' 
-    };
+    console.error('Error proceeding to payment:', error);
+    return { success: false, error: 'Failed to proceed to payment' };
   }
 }
