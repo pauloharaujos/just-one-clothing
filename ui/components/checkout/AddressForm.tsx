@@ -43,13 +43,13 @@ export function AddressForm({
     
     const newErrors: Partial<AddressFormData> = {};
     
-    if (!formData.firstName.trim()) newErrors.firstName = 'First name is required';
-    if (!formData.lastName.trim()) newErrors.lastName = 'Last name is required';
-    if (!formData.street1.trim()) newErrors.street1 = 'Street address is required';
-    if (!formData.city.trim()) newErrors.city = 'City is required';
-    if (!formData.state.trim()) newErrors.state = 'State is required';
-    if (!formData.postalCode.trim()) newErrors.postalCode = 'Postal code is required';
-    if (!formData.phone.trim()) newErrors.phone = 'Phone number is required';
+    if (!formData.firstName?.trim()) newErrors.firstName = 'First name is required';
+    if (!formData.lastName?.trim()) newErrors.lastName = 'Last name is required';
+    if (!formData.street1?.trim()) newErrors.street1 = 'Street address is required';
+    if (!formData.city?.trim()) newErrors.city = 'City is required';
+    if (!formData.state?.trim()) newErrors.state = 'State is required';
+    if (!formData.postalCode?.trim()) newErrors.postalCode = 'Postal code is required';
+    if (!formData.phone?.trim()) newErrors.phone = 'Phone number is required';
 
     setErrors(newErrors);
 

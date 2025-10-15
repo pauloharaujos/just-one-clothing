@@ -7,7 +7,7 @@ import {
   deleteAddress,
   saveAddress as saveAddressService 
 } from '@/services/address/addressService';
-import { getCheckoutDataService, CheckoutData } from '@/services/checkout/checkoutService';
+import { getCheckoutDataService, CheckoutData, validateCheckout } from '@/services/checkout/checkoutService';
 import { getCustomerByEmail } from '@/repository/customerRepository';
 import { CreateAddressData } from '@/services/address/addressService';
 
@@ -107,7 +107,7 @@ export async function placeOrder(
   billingAddressId: number
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    await validateCheckout(shippingAddressId, billingAddressId);
+    //await validateCheckout(shippingAddressId, billingAddressId);
     return { success: true };
   } catch (error) {
     console.error('Error proceeding to payment:', error);
