@@ -42,7 +42,6 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
       setSelectedBillingAddressId(addressId);
     }
 
-    // Auto-transition: collapse address selector and expand review section
     setIsAddressSelectorExpanded(false);
     setIsReviewSectionExpanded(true);
   };
@@ -91,7 +90,6 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
   const handleCancelForm = () => {
     setUiMode('selecting');
     setEditingAddressId(undefined);
-    // Return to address selector when canceling form
     setIsAddressSelectorExpanded(true);
     setIsReviewSectionExpanded(false);
   };
@@ -124,9 +122,7 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-      {/* Left Column - Addresses Section */}
       <div className="lg:col-span-2 space-y-8">
-        {/* Step 1: Your Addresses */}
         <div className="space-y-6">
           <div 
             className="flex items-center justify-between cursor-pointer"
@@ -170,7 +166,6 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
           )}
         </div>
 
-        {/* Address Form (when editing/adding) */}
         {(uiMode === 'editing' || uiMode === 'adding') && (
           <div className="space-y-6">
             <div className="flex items-center space-x-3">
@@ -192,7 +187,6 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
           </div>
         )}
 
-        {/* Step 2: Selected Addresses */}
         <div className="space-y-6">
           <div 
             className="flex items-center justify-between cursor-pointer"
@@ -226,7 +220,6 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
           {isReviewSectionExpanded && (
             <div className="transition-all duration-300 ease-in-out">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            {/* Shipping Address Card */}
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
               <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
                 <h3 className="text-sm font-medium text-gray-900 flex items-center">
@@ -284,7 +277,6 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
               </div>
             </div>
 
-            {/* Billing Address Card */}
             <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
               <div className="bg-gray-50 px-6 py-3 border-b border-gray-200">
                 <h3 className="text-sm font-medium text-gray-900 flex items-center">
@@ -390,7 +382,6 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
         </div>
       </div>
 
-      {/* Right Column - Order Summary */}
       <div className="lg:col-span-1">
         <CheckoutSummary 
           items={items}
