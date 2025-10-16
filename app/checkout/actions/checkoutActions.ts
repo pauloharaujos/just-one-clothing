@@ -1,30 +1,31 @@
 'use server';
 
-import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import { 
   deleteAddress,
   saveAddress as saveAddressService 
 } from '@/services/address/addressService';
-import { getCheckoutDataService, CheckoutData, validateCheckout } from '@/services/checkout/checkoutService';
-import { getCustomerByEmail } from '@/repository/customerRepository';
+import { 
+  getCheckoutDataService,
+  CheckoutData,
+  validateCheckout,
+  calculateTotals 
+} from '@/services/checkout/checkoutService';
+import { getCustomerFromSession } from '@/lib/utils';
 import { CreateAddressData } from '@/services/address/addressService';
+import { createOrder, generateOrderNumber } from '@/repository/orderRepository';
+import { deactivateUserCart } from '@/repository/quoteRepository';
+import { OrderWithDetails } from '@/repository/orderRepository';
 
 /**
  * Get checkout data for a user
  */
 export async function getCheckoutData(): Promise<CheckoutData> {
-  const session = await auth();
+  const customer = await getCustomerFromSession();
     
-  if (!session?.user?.email) {
-    redirect('/customer/login?callbackUrl=/checkout');
-  }
-
-  const customer = await getCustomerByEmail(session?.user?.email);
-
   if (!customer?.id) {
-    throw new Error('User not authenticated');
+    redirect('/customer/login?callbackUrl=/checkout');
   }
 
   try {
@@ -47,13 +48,7 @@ export async function getCheckoutData(): Promise<CheckoutData> {
 export async function saveAddress(
   addressData: CreateAddressData
 ): Promise<{ success: boolean; error?: string }> {
-  const session = await auth();
-
-  if (!session?.user?.email) {
-    throw new Error('User not authenticated');
-  }
-
-  const customer = await getCustomerByEmail(session?.user?.email);
+  const customer = await getCustomerFromSession();
 
   if (!customer?.id) {
     throw new Error('User not authenticated');
@@ -76,14 +71,8 @@ export async function saveAddress(
 export async function deleteAddressAction(
   addressId: number
 ): Promise<{ success: boolean; error?: string }> {
-  const session = await auth();
+  const customer = await getCustomerFromSession();
   
-  if (!session?.user?.email) {
-    throw new Error('User not authenticated');
-  }
-
-  const customer = await getCustomerByEmail(session?.user?.email);
-
   if (!customer?.id) {
     throw new Error('User not authenticated');
   }
@@ -100,17 +89,57 @@ export async function deleteAddressAction(
 }
 
 /**
- * Proceed to payment
+ * Place order and redirect to success page
  */
 export async function placeOrder(
   shippingAddressId: number,
   billingAddressId: number
 ): Promise<{ success: boolean; error?: string }> {
-  try {
-    //await validateCheckout(shippingAddressId, billingAddressId);
-    return { success: true };
-  } catch (error) {
-    console.error('Error proceeding to payment:', error);
-    return { success: false, error: 'Failed to proceed to payment' };
+  const customer = await getCustomerFromSession();
+  let order: OrderWithDetails;
+
+  if (!customer?.id) {
+    throw new Error('User not authenticated');
   }
+
+  try {
+    const validation = await validateCheckout(customer.id, billingAddressId, shippingAddressId);
+
+    const totals = calculateTotals(
+      validation.cart.quoteItems.map(item => ({
+        price: item.price,
+        quantity: item.quantity
+      }))
+    );
+
+    const orderNumber = await generateOrderNumber();
+
+    order = await createOrder({
+      orderNumber,
+      user: { connect: { id: customer.id } },
+      billingAddress: { connect: { id: billingAddressId } },
+      shippingAddress: { connect: { id: shippingAddressId } },
+      subtotal: totals.subtotal,
+      tax: totals.tax,
+      total: totals.total,
+      status: 'PENDING',
+      orderItems: {
+        create: validation.cart.quoteItems.map(item => ({
+          product: { connect: { id: item.productId } },
+          quantity: item.quantity,
+          price: item.price,
+          name: item.product.name,
+          sku: item.product.sku
+        }))
+      }
+    });
+
+    await deactivateUserCart(validation.cart.id);
+  } catch (error) {
+    console.error('Error placing order:', error);
+    return { success: false, error: 'Failed to place order. Please try again.' };
+  }
+
+  revalidatePath('/checkout');
+  redirect(`/checkout/success?orderNumber=${order.orderNumber}`);
 }

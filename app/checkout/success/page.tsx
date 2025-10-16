@@ -1,8 +1,7 @@
 import { Metadata } from 'next';
 import { redirect } from 'next/navigation';
-import { auth } from '@/auth';
 import { getOrderByOrderNumberService } from '@/services/checkout/checkoutService';
-import { formatCurrency } from '@/lib/utils';
+import { formatCurrency, getCustomerFromSession } from '@/lib/utils';
 import HeaderWrapper from '@/ui/components/HeaderWrapper';
 import Footer from '@/ui/components/Footer';
 
@@ -14,28 +13,30 @@ export const metadata: Metadata = {
 };
 
 interface SuccessPageProps {
-  searchParams: {
-    session_id?: string;
-    order?: string;
-  };
+  searchParams: Promise<{
+    orderNumber: string;
+  }>;
 }
 
 export default async function SuccessPage({ searchParams }: SuccessPageProps) {
-  const session = await auth();
+  const customer = await getCustomerFromSession();
   
-  if (!session?.user?.id) {
-    redirect('/customer/login');
+  if (!customer?.id) {
+    redirect('/');
   }
 
-  const orderNumber = searchParams.order;
+  const resolvedSearchParams = await searchParams;
+  const orderNumber = resolvedSearchParams.orderNumber;
   
   if (!orderNumber) {
     redirect('/');
   }
 
   try {
-    const order = await getOrderByOrderNumberService(orderNumber, session.user.id);
+    const order = await getOrderByOrderNumberService(orderNumber, customer.id);
     
+    console.log('where is the order?');
+    console.log('order', order);
     if (!order) {
       redirect('/');
     }

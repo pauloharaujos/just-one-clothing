@@ -22,7 +22,9 @@ export interface CheckoutData {
 /**
  * Get checkout data for a user (cart + addresses)
  */
-export async function getCheckoutDataService(userId: string): Promise<CheckoutData> {
+export async function getCheckoutDataService(
+  userId: string
+): Promise<CheckoutData> {
   try {
     const [cart, addresses] = await Promise.all([
       getCart(),
@@ -92,36 +94,31 @@ export async function validateCheckout(
   billingAddressId: number,
   shippingAddressId: number
 ): Promise<CheckoutValidationResult> {
-  try {
-    const cart = await getCart();
-    if (!cart || cart.quoteItems.length === 0) {
-      throw new Error('Cart is empty');
-    }
-
-    const addresses = await getAddressesByUserId(userId);
-    const billingAddress = addresses.find(addr => addr.id === billingAddressId);
-    const shippingAddress = addresses.find(addr => addr.id === shippingAddressId);
-
-    if (!billingAddress) {
-      console.error('Invalid billing address', billingAddressId);
-      console.error('Addresses', addresses);
-      throw new Error('Invalid billing address');
-    }
-
-    if (!shippingAddress) {
-      console.error('Invalid shipping address', shippingAddressId);
-      console.error('Addresses', addresses);
-      throw new Error('Invalid shipping address');
-    }
-
-    return {
-      isValid: true,
-      cart,
-      billingAddress,
-      shippingAddress
-    };
-  } catch (error) {
-    console.error('Error validating checkout:', error);
-    throw new Error('Failed to validate checkout');
+  const cart = await getCart();
+  if (!cart || cart.quoteItems.length === 0) {
+    throw new Error('Cart is empty');
   }
+
+  const addresses = await getAddressesByUserId(userId);
+  const billingAddress = addresses.find(addr => addr.id === billingAddressId);
+  const shippingAddress = addresses.find(addr => addr.id === shippingAddressId);
+
+  if (!billingAddress) {
+    console.error('Invalid billing address', billingAddressId);
+    console.error('Addresses', addresses);
+    throw new Error('Invalid billing address');
+  }
+
+  if (!shippingAddress) {
+    console.error('Invalid shipping address', shippingAddressId);
+    console.error('Addresses', addresses);
+    throw new Error('Invalid shipping address');
+  }
+
+  return {
+    isValid: true,
+    cart,
+    billingAddress,
+    shippingAddress
+  };
 }
