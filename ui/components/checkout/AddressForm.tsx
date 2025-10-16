@@ -22,17 +22,19 @@ export function AddressForm({
   showDefaultCheckbox = false,
   disabled = false
 }: AddressFormProps) {
-  const [formData, setFormData] = useState({
-    firstName: initialData.firstName,
-    lastName: initialData.lastName,
+  const [formData, setFormData] = useState<AddressFormData>({
+    id: initialData.id || undefined,
+    userId: initialData.userId || '',
+    firstName: initialData.firstName || '',
+    lastName: initialData.lastName || '',
     company: initialData.company || '',
-    street1: initialData.street1,
+    street1: initialData.street1 ?? '',
     street2: initialData.street2 || '',
-    city: initialData.city,
-    state: initialData.state,
-    postalCode: initialData.postalCode,
-    country: initialData.country,
-    phone: initialData.phone,
+    city: initialData.city || '',
+    state: initialData.state || '',
+    postalCode: initialData.postalCode || '',
+    country: initialData.country || 'US',
+    phone: initialData.phone || '',
     isDefault: initialData.isDefault || false
   });
 
@@ -117,7 +119,7 @@ export function AddressForm({
           <input
             type="text"
             id="company"
-            value={formData.company}
+            value={formData.company || ''}
             onChange={(e) => handleChange('company', e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
             disabled={disabled}
@@ -150,7 +152,7 @@ export function AddressForm({
           <input
             type="text"
             id="street2"
-            value={formData.street2}
+            value={formData.street2 || ''}
             onChange={(e) => handleChange('street2', e.target.value)}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 text-black"
             disabled={disabled}
