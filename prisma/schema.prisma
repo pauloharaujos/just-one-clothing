@@ -1,6 +1,6 @@
 generator client {
   provider = "prisma-client-js"
-  output   = "../app/generated/prisma"
+  output   = "./generated"
 }
 
 datasource db {
@@ -8,27 +8,24 @@ datasource db {
   url      = env("POSTGRES_URL")
 }
 
-model Product {
-  id Int @id @default(autoincrement())
-  name String
-  sku String
-  description String
-  price Float
-  visible Boolean @default(true)
-}
-
 model User {
   id            String          @id @default(cuid())
   name          String?
   age           Int?
+  cpf           String?
+  phone         String?
   email         String          @unique
+  password      String?
   emailVerified DateTime?
   image         String?
   accounts      Account[]
   sessions      Session[]
   // Optional for WebAuthn support
   Authenticator Authenticator[]
- 
+  quotes        Quote[]
+  addresses     Address[]
+  orders        Order[]
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 }
@@ -86,4 +83,184 @@ model Authenticator {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
  
   @@id([userId, credentialID])
+}
+
+model Product {
+  id Int @id @default(autoincrement())
+  name String
+  sku String
+  url String @unique
+  description String
+  price Float
+  visible Boolean @default(true)
+  productImageLinks ProductImageLink[]
+  productCategories ProductCategory[]
+  quoteItems QuoteItem[]
+  orderItems OrderItem[]
+}
+
+model Image {
+  id Int @id @default(autoincrement())
+  filename String
+  altText String?
+  type String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  productImageLinks ProductImageLink[]
+}
+
+model ProductImageLink {
+  productId Int
+  imageId Int
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
+  @@id([productId, imageId])
+  @@index([productId])
+  @@index([imageId])
+}
+
+model Category {
+  id Int @id @default(autoincrement())
+  name String
+  url String @unique
+  description String?
+  parentId Int?
+  parent Category? @relation("CategoryHierarchy", fields: [parentId], references: [id], onDelete: Cascade)
+  children Category[] @relation("CategoryHierarchy")
+  visible Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  productCategories ProductCategory[]
+}
+
+model ProductCategory {
+  productId Int
+  categoryId Int
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  @@id([productId, categoryId])
+  @@index([productId])
+  @@index([categoryId])
+}
+
+model UrlRewrite {
+  id Int @id @default(autoincrement())
+  requestPath String @unique
+  targetType UrlTargetType
+  targetId Int
+  targetPath String?
+  redirectType Int?
+  isCanonical Boolean @default(true)
+  isActive Boolean @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+enum UrlTargetType {
+  PRODUCT
+  CATEGORY
+}
+
+model Quote {
+  id         Int      @id @default(autoincrement())
+  userId     String
+  isActive   Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  
+  user       User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  quoteItems QuoteItem[]
+  
+  @@index([userId])
+}
+
+model QuoteItem {
+  id        Int     @id @default(autoincrement())
+  quoteId   Int
+  productId Int
+  quantity  Int
+  price     Float
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  quote   Quote   @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  
+  @@index([quoteId])
+  @@index([productId])
+}
+
+model Address {
+  id           Int      @id @default(autoincrement())
+  userId       String
+  firstName    String
+  lastName     String
+  company      String?
+  street1      String
+  street2      String?
+  city         String
+  state        String
+  postalCode   String
+  country      String   @default("US")
+  phone        String
+  isDefault    Boolean  @default(false)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  billingOrders  Order[] @relation("BillingAddress")
+  shippingOrders Order[] @relation("ShippingAddress")
+  
+  @@index([userId])
+}
+
+model Order {
+  id                  Int      @id @default(autoincrement())
+  orderNumber         String   @unique
+  userId              String
+  billingAddressId    Int
+  shippingAddressId   Int
+  subtotal            Float
+  tax                 Float
+  total               Float
+  status              OrderStatus @default(PENDING)
+  stripeSessionId     String?
+  stripePaymentIntent String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+  
+  user            User        @relation(fields: [userId], references: [id])
+  billingAddress  Address     @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  shippingAddress Address     @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  orderItems      OrderItem[]
+  
+  @@index([userId])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id        Int      @id @default(autoincrement())
+  orderId   Int
+  productId Int
+  quantity  Int
+  price     Float
+  name      String
+  sku       String
+  createdAt DateTime @default(now())
+  
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+  
+  @@index([orderId])
+}
+
+enum OrderStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  CANCELLED
+  REFUNDED
 }
