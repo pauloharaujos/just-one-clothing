@@ -1,13 +1,11 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { updateCustomerInfo } from '@/repository/customerRepository';
-import { auth } from '@/auth';
+import { getCustomerFromSession } from '@/lib/utils';
 
 export async function POST(request: NextRequest) {
-  const session = await auth();
-
-  console.log('Session:', session);
+  const customer = await getCustomerFromSession();
   
-  if (!session?.user?.email) {
+  if (!customer?.email) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
@@ -15,7 +13,7 @@ export async function POST(request: NextRequest) {
   const { name, cpf, phone, age } = body;
 
   try {
-    const updated = await updateCustomerInfo(session.user.email, {
+    const updated = await updateCustomerInfo(customer.email, {
       name,
       cpf,
       phone,

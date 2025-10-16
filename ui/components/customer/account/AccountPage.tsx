@@ -4,16 +4,10 @@ import Footer from "@/ui/components/Footer";
 import TopBanner from '@/ui/cms/top-banner';
 import Sidebar from "@/ui/components/customer/account/Sidebar";
 import CustomerInfo from "@/ui/components/customer/account/CustomerInfo";
-import { auth } from '@/auth';
-import { getCustomerByEmail } from '@/repository/customerRepository';
+import { getCustomerFromSession } from '@/lib/utils';
 
 export default async function AccountPage() {
-  const session = await auth();
-  let user = null;
-
-  if (session?.user?.email) {
-    user = await getCustomerByEmail(session.user.email);
-  }
+  const user = await getCustomerFromSession();
   
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
