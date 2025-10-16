@@ -4,7 +4,11 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Address } from '@/prisma/generated';
 import { AddressForm, AddressFormData } from './AddressForm';
-import { saveAddress, deleteAddressAction, placeOrder } from '@/app/checkout/actions/checkoutActions';
+import { 
+  saveAddress,
+  deleteAddressAction,
+  placeOrder 
+} from '@/app/checkout/actions/checkoutActions';
 import { CheckoutData } from '@/services/checkout/checkoutService';
 import { QuoteItemWithProduct } from '@/repository/quoteRepository';
 import AddressSelector from './AddressSelector';
@@ -116,8 +120,8 @@ export default function CheckoutContainer({ checkout }: CheckoutContainerProps) 
 
     const billingAddressId = useSameAsShipping ? selectedShippingAddressId : selectedBillingAddressId!;
     setIsLoading(true);
-
     await placeOrder(selectedShippingAddressId, billingAddressId);
+    setIsLoading(false);
   };
 
   return (
