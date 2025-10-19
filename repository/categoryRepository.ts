@@ -196,11 +196,6 @@ export async function getProductsByCategory(categoryId: number): Promise<any[]> 
         },
       },
     },
-    include: {
-      productImageLinks: {
-        include: { image: true },
-      },
-    },
     orderBy: { name: 'asc' },
   });
 }

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import Image from 'next/image';
+import CloudinaryImage from '@/ui/components/CloudinaryImage';
 import { formatCurrency } from '@/lib/utils';
 import { Product } from './types';
 
@@ -10,7 +10,6 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-  const image = product.productImageLinks[0]?.image;
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -21,21 +20,13 @@ export default function ProductCard({ product }: ProductCardProps) {
     <div className="group bg-white border border-gray-200 rounded-lg hover:shadow-lg transition-shadow duration-200 overflow-hidden">
       <Link href={`/${product.url}`} className="block">
         <div className="aspect-square w-full bg-gray-200 overflow-hidden">
-          {image ? (
-            <Image
-              src={`/product/images/${product.id}/${image.filename}`}
-              alt={image.altText || product.name}
-              width={300}
-              height={300}
-              className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
-            />
-          ) : (
-            <div className="flex h-full w-full items-center justify-center text-gray-400">
-              <svg className="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-              </svg>
-            </div>
-          )}
+          <CloudinaryImage
+            sku={product.sku}
+            alt={product.name}
+            width={384}
+            height={531}
+            className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-200"
+          />
         </div>
       </Link>
 

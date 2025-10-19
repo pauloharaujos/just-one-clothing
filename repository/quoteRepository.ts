@@ -9,13 +9,7 @@ export type QuoteWithItems = Prisma.QuoteGetPayload<{
   include: {
     quoteItems: {
       include: {
-        product: {
-          include: {
-            productImageLinks: {
-              include: { image: true }
-            }
-          }
-        }
+        product: true
       }
     }
   };
@@ -23,13 +17,7 @@ export type QuoteWithItems = Prisma.QuoteGetPayload<{
 
 export type QuoteItemWithProduct = Prisma.QuoteItemGetPayload<{
   include: {
-    product: {
-      include: {
-        productImageLinks: {
-          include: { image: true }
-        }
-      }
-    }
+    product: true
   };
 }>;
 
@@ -47,13 +35,7 @@ export async function getQuote(
     include: {
       quoteItems: {
         include: {
-          product: {
-            include: {
-              productImageLinks: {
-                include: { image: true }
-              }
-            }
-          }
+          product: true
         }
       }
     }
@@ -79,13 +61,7 @@ async function createQuote(
     include: {
       quoteItems: {
         include: {
-          product: {
-            include: {
-              productImageLinks: {
-                include: { image: true }
-              }
-            }
-          }
+          product: true
         }
       }
     }
@@ -105,13 +81,7 @@ export async function getQuoteById(
     include: {
       quoteItems: {
         include: {
-          product: {
-            include: {
-              productImageLinks: {
-                include: { image: true }
-              }
-            }
-          }
+          product: true
         }
       }
     }
@@ -211,13 +181,7 @@ export async function getQuoteItemCount(userId: string): Promise<number> {
     include: {
       quoteItems: {
         include: {
-          product: {
-            include: {
-              productImageLinks: {
-                include: { image: true }
-              }
-            }
-          }
+          product: true
         }
       }
     }

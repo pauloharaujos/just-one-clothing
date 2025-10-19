@@ -12,11 +12,6 @@ type Product = {
   description: string;
   price: number;
   visible: boolean;
-  productImageLinks: Array<{
-    image: {
-      filename: string;
-    };
-  }>;
 };
 
 export interface MetadataContext {
@@ -162,14 +157,15 @@ export class MetadataService {
    * Get product images for Open Graph
    */
   private getProductImages(product: Product): string[] {
-    if (!product.productImageLinks || product.productImageLinks.length === 0) {
+    const cloudName = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+
+    if (!cloudName) {
       return [];
     }
-
-    return product.productImageLinks
-      .slice(0, 4)
-      .map((link) => link.image.filename)
-      .filter(Boolean);
+    
+    const imageUrl = `https://res.cloudinary.com/${cloudName}/image/upload/images/${product.sku}.png`;
+    
+    return [imageUrl];
   }
 
   /**
