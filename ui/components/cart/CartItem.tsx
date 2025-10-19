@@ -1,7 +1,7 @@
 'use client';
 
-import Image from 'next/image';
 import Link from 'next/link';
+import CloudinaryImage from '@/ui/components/CloudinaryImage';
 import { useState, useTransition } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { updateCartItemQuantity, removeFromCart } from '@/app/cart/actions/cartActions';
@@ -17,12 +17,6 @@ interface CartItemProps {
       sku: string;
       url: string;
       price: number;
-      productImageLinks: Array<{
-        image: {
-          filename: string;
-          altText: string | null;
-        };
-      }>;
     };
   };
 }
@@ -31,7 +25,6 @@ export default function CartItem({ item }: CartItemProps) {
   const [quantity, setQuantity] = useState(item.quantity);
   const [isPending, startTransition] = useTransition();
 
-  const image = item.product.productImageLinks[0]?.image;
   const subtotal = item.price * quantity;
 
   const handleQuantityChange = (newQuantity: number) => {
@@ -53,19 +46,13 @@ export default function CartItem({ item }: CartItemProps) {
     <div className="flex items-center space-x-4 py-4 border-b border-gray-200">
       <div className="flex-shrink-0 w-20 h-20">
         <Link href={`/${item.product.url}`}>
-          {image ? (
-            <Image
-              src={`/product/images/${item.product.id}/${image.filename}`}
-              alt={image.altText || item.product.name}
-              width={80}
-              height={80}
-              className="w-full h-full object-cover rounded-lg"
-            />
-          ) : (
-            <div className="w-full h-full bg-gray-100 rounded-lg flex items-center justify-center text-gray-400 text-xs">
-              No image
-            </div>
-          )}
+          <CloudinaryImage
+            sku={item.product.sku}
+            alt={item.product.name}
+            width={384}
+            height={531}
+            className="w-full h-full object-cover rounded-lg"
+          />
         </Link>
       </div>
 
