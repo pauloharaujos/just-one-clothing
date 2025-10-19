@@ -1,5 +1,5 @@
-import Image from 'next/image';
 import Link from 'next/link';
+import CloudinaryImage from '@/ui/components/CloudinaryImage';
 import { getRecommendedProducts } from '@/repository/productRepository';
 import { formatCurrency } from '@/lib/utils';
 
@@ -13,23 +13,16 @@ export default async function Products() {
 
                 <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
                     {products.map((product) => {
-                        const image = product.productImageLinks[0]?.image;
                         return (
                             <div key={product.id} className="group relative">
                                 <div className="aspect-square w-full rounded-md bg-gray-200 object-cover group-hover:opacity-75 lg:aspect-auto lg:h-80 overflow-hidden">
-                                    {image ? (
-                                        <Image 
-                                            src={`/product/images/${product.id}/${image.filename}`}
-                                            alt={image.altText || product.name}
-                                            width={180}
-                                            height={180}
-                                            className="h-full w-full object-cover" 
-                                        />
-                                    ) : (
-                                        <div className="flex h-full w-full items-center justify-center text-gray-400">
-                                            No image
-                                        </div>
-                                    )}
+                                    <CloudinaryImage
+                                        sku={product.sku}
+                                        alt={product.name}
+                                        width={384}
+                                        height={531}
+                                        className="h-full w-full object-cover"
+                                    />
                                 </div>
                                 <div className="mt-4 flex justify-between">
                                     <div>

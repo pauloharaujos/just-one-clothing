@@ -93,30 +93,9 @@ model Product {
   description String
   price Float
   visible Boolean @default(true)
-  productImageLinks ProductImageLink[]
   productCategories ProductCategory[]
   quoteItems QuoteItem[]
   orderItems OrderItem[]
-}
-
-model Image {
-  id Int @id @default(autoincrement())
-  filename String
-  altText String?
-  type String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
-  productImageLinks ProductImageLink[]
-}
-
-model ProductImageLink {
-  productId Int
-  imageId Int
-  product Product @relation(fields: [productId], references: [id], onDelete: Cascade)
-  image Image @relation(fields: [imageId], references: [id], onDelete: Cascade)
-  @@id([productId, imageId])
-  @@index([productId])
-  @@index([imageId])
 }
 
 model Category {

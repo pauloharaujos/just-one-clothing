@@ -1,9 +1,9 @@
 'use client';
 
-import Image from 'next/image';
 import { useState, useTransition } from 'react';
 import { formatCurrency } from '@/lib/utils';
 import { addToCart } from '@/app/cart/actions/cartActions';
+import CloudinaryImage from '@/ui/components/CloudinaryImage';
 
 interface ProductPageProps {
   product: {
@@ -11,20 +11,13 @@ interface ProductPageProps {
     name: string;
     description: string;
     price: number;
-    productImageLinks: Array<{
-      image: {
-        filename: string;
-        altText?: string | null;
-      };
-    }>;
+    sku: string;
   };
 }
 
 export default function ProductPage({ product }: ProductPageProps) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
-  const image = product.productImageLinks[0]?.image;
 
   const handleAddToCart = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -49,18 +42,13 @@ export default function ProductPage({ product }: ProductPageProps) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         <div className="w-full">
           <div className="aspect-square w-full overflow-hidden rounded-xl border border-gray-200 bg-white">
-            {image ? (
-              <Image
-                src={`/product/images/${product.id}/${image.filename}`}
-                alt={image.altText || product.name}
-                width={800}
-                height={800}
-                className="h-full w-full object-contain"
-                priority
-              />
-            ) : (
-              <div className="flex h-full w-full items-center justify-center text-gray-400">No image</div>
-            )}
+            <CloudinaryImage
+              sku={product.sku}
+              alt={product.name}
+              width={384}
+              height={531}
+              className="h-full w-full object-contain"
+            />
           </div>
         </div>
 
