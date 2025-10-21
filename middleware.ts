@@ -1,20 +1,26 @@
+import NextAuth from "next-auth";
 import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
-import { getToken } from "next-auth/jwt"
+import authConfig from "./auth.config";
 
 const protectedPaths = ['/orders', '/customer/account', '/checkout', '/cart'];
+const { auth } = NextAuth(authConfig);
 
-export async function middleware(request: NextRequest) {
-    const token = await getToken({ req: request, secret: process.env.AUTH_SECRET })
-    const { pathname } = request.nextUrl
+export default auth((req) => {
+    const { pathname } = req.nextUrl;
+    const isLoggedIn = !!req.auth;
 
     const isProtectedPath = protectedPaths.some((route) =>
         pathname.startsWith(route)
     );
 
-    if (isProtectedPath && !token) {
-        return NextResponse.redirect(new URL("/customer/login", request.url));
+    if (isProtectedPath && !isLoggedIn) {
+        const newUrl = new URL("/customer/login", req.nextUrl.origin);
+        return NextResponse.redirect(newUrl);
     }
 
     return NextResponse.next();
+})
+
+export const config = {
+    matcher: ['/((?!api|_next/static|_next/image|favicon.ico|.*\\..*).*)']
 }
