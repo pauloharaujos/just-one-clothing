@@ -1,17 +1,16 @@
 import NextAuth from 'next-auth';
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import prisma from "@/prisma/prismaClient";
-import Google from "next-auth/providers/google";
-import GitHub from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials";
 import { compare } from "bcryptjs";
+import authConfig from "./auth.config";
 
-const authConfig = {
+export const { handlers, signIn, signOut, auth } = NextAuth({
   adapter: PrismaAdapter(prisma),
-  session: { strategy: "jwt" as const },
+  session: { strategy: "jwt" },
+  ...authConfig,
   providers: [
-    Google,
-    GitHub,
+    ...authConfig.providers,
     Credentials({
       name: "Credentials",
       credentials: {
@@ -21,11 +20,16 @@ const authConfig = {
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
 
-        const user = await prisma.user.findUnique({ where: { email: credentials.email as string } });
+        const user = await prisma.user.findUnique({ 
+          where: { email: credentials.email as string } 
+        });
 
         if (!user || !user.password) return null;
 
-        const isValid = await compare(credentials.password as string, user.password);
+        const isValid = await compare(
+          credentials.password as string, 
+          user.password
+        );
 
         if (!isValid) return null;
 
@@ -38,6 +42,4 @@ const authConfig = {
       },
     }),
   ],
-};
-
-export const { handlers, signIn, signOut, auth } = NextAuth(authConfig);
+});
