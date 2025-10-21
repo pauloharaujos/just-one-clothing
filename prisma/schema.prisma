@@ -206,8 +206,6 @@ model Order {
   tax                 Float
   total               Float
   status              OrderStatus @default(PENDING)
-  stripeSessionId     String?
-  stripePaymentIntent String?
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
   
@@ -215,6 +213,7 @@ model Order {
   billingAddress  Address     @relation("BillingAddress", fields: [billingAddressId], references: [id])
   shippingAddress Address     @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
   orderItems      OrderItem[]
+  orderPayment    OrderPayment?
   
   @@index([userId])
   @@index([orderNumber])
@@ -236,10 +235,35 @@ model OrderItem {
   @@index([orderId])
 }
 
+model OrderPayment {
+  id                  Int           @id @default(autoincrement())
+  orderId             Int           @unique
+  stripeSessionId     String?       @unique
+  stripePaymentIntent String?       @unique
+  paymentStatus       PaymentStatus @default(PENDING)
+  amount              Float
+  currency            String        @default("usd")
+  paymentMethod       String?
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  
+  order               Order         @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  
+  @@index([orderId])
+  @@index([stripeSessionId])
+}
+
 enum OrderStatus {
   PENDING
   PROCESSING
   COMPLETED
   CANCELLED
+  REFUNDED
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  FAILED
   REFUNDED
 }

@@ -1,9 +1,12 @@
 import { getOrderByOrderNumber, getOrdersByUserId } from '@/repository/orderRepository';
 import { getCart } from '@/services/cart/cartService';
-import { QuoteWithItems } from '@/repository/quoteRepository';
+import { QuoteWithItems, deactivateUserCart } from '@/repository/quoteRepository';
 import { getAddressesByUserId } from '@/services/address/addressService';
 import { Address } from '@/prisma/generated';
-import { OrderWithDetails } from '@/repository/orderRepository';
+import { OrderWithDetails, createOrder as createOrderRepository, generateOrderNumber } from '@/repository/orderRepository';
+import { createOrderPayment, updateOrderPayment } from '@/repository/orderPaymentRepository';
+import { createCheckoutSession } from '@/services/stripe/stripeService';
+import { headers } from 'next/headers';
 
 export interface CheckoutValidationResult {
   isValid: boolean;
@@ -95,6 +98,7 @@ export async function validateCheckout(
   shippingAddressId: number
 ): Promise<CheckoutValidationResult> {
   const cart = await getCart();
+
   if (!cart || cart.quoteItems.length === 0) {
     throw new Error('Cart is empty');
   }
@@ -121,4 +125,115 @@ export async function validateCheckout(
     billingAddress,
     shippingAddress
   };
+}
+
+/**
+ * Create order with items and addresses
+ */
+export async function createOrder(
+  customerId: string,
+  billingAddressId: number,
+  shippingAddressId: number,
+  validation: CheckoutValidationResult,
+  totals: { subtotal: number; tax: number; total: number }
+): Promise<OrderWithDetails> {
+  const orderNumber = await generateOrderNumber();
+
+  return await createOrderRepository({
+    orderNumber,
+    user: { connect: { id: customerId } },
+    billingAddress: { connect: { id: billingAddressId } },
+    shippingAddress: { connect: { id: shippingAddressId } },
+    subtotal: totals.subtotal,
+    tax: totals.tax,
+    total: totals.total,
+    status: 'PENDING',
+    orderItems: {
+      create: validation.cart.quoteItems.map(item => ({
+        product: { connect: { id: item.productId } },
+        quantity: item.quantity,
+        price: item.price,
+        name: item.product.name,
+        sku: item.product.sku
+      }))
+    }
+  });
+}
+
+/**
+ * Process payment and create Stripe checkout session
+ */
+export async function processPayment(
+  order: OrderWithDetails,
+  customerEmail: string,
+  items: Array<{ name: string; quantity: number; price: number }>,
+  total: number
+): Promise<string> {
+  await createOrderPayment({
+    orderId: order.id,
+    amount: total,
+    currency: 'usd',
+  });
+
+  const headersList = await headers();
+  const host = headersList.get('host');
+  const protocol = process.env.NODE_ENV === 'production' ? 'https' : 'http';
+  const baseUrl = `${protocol}://${host}`;
+
+  const checkoutSession = await createCheckoutSession({
+    orderId: order.id,
+    orderNumber: order.orderNumber,
+    items,
+    total,
+    customerEmail,
+    baseUrl,
+  });
+
+  await updateOrderPayment(order.id, {
+    stripeSessionId: checkoutSession.sessionId,
+  });
+
+  return checkoutSession.url;
+}
+
+/**
+ * Place order and return Stripe checkout URL
+ */
+export async function placeOrderService(
+  customerId: string,
+  customerEmail: string,
+  shippingAddressId: number,
+  billingAddressId: number
+): Promise<string> {
+  const validation = await validateCheckout(customerId, billingAddressId, shippingAddressId);
+
+  const totals = calculateTotals(
+    validation.cart.quoteItems.map(item => ({
+      price: item.price,
+      quantity: item.quantity
+    }))
+  );
+
+  const order = await createOrder(
+    customerId,
+    billingAddressId,
+    shippingAddressId,
+    validation,
+    totals
+  );
+
+  const stripeCheckoutUrl = await processPayment(
+    order,
+    customerEmail,
+    validation.cart.quoteItems.map(item => ({
+      name: item.product.name,
+      quantity: item.quantity,
+      price: item.price,
+    })),
+    totals.total
+  );
+
+  await deactivateUserCart(validation.cart.id);
+
+  return stripeCheckoutUrl;
 }
