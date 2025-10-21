@@ -128,33 +128,3 @@ export async function updateOrderStatus(
     data: { status }
   });
 }
-
-/**
- * Update order Stripe data
- */
-export async function updateOrderStripeData(
-  id: number,
-  stripePaymentIntent: string,
-  status: OrderStatus
-): Promise<Order> {
-  return await prisma.order.update({
-    where: { id },
-    data: {
-      stripePaymentIntent,
-      status: status
-    }
-  });
-}
-
-/**
- * Update order Stripe session ID
- */
-export async function updateOrderStripeSessionId(
-  id: number,
-  stripeSessionId: string
-): Promise<Order> {
-  return await prisma.order.update({
-    where: { id },
-    data: { stripeSessionId }
-  });
-}
