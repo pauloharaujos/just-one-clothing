@@ -114,17 +114,3 @@ export async function getOrdersByUserId(
     skip: offset
   });
 }
-
-/**
- * Update order status
- */
-export async function updateOrderStatus(
-  id: number,
-  status: OrderStatus
-): Promise<Order> {
-
-  return await prisma.order.update({
-    where: { id },
-    data: { status }
-  });
-}
