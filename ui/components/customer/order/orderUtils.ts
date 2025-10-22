@@ -1,3 +1,5 @@
+import { Address } from '@/prisma/generated';
+
 export const getStatusColor = (status: string) => {
   switch (status) {
     case 'PENDING':
@@ -40,7 +42,7 @@ export const formatCurrency = (amount: number) => {
   }).format(amount);
 };
 
-export const formatAddress = (address: any) => {
+export const formatAddress = (address: Address) => {
   const parts = [
     address.firstName + ' ' + address.lastName,
     address.company,

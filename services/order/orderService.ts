@@ -1,8 +1,8 @@
-import { getOrdersByUserId, getOrdersCountByUserId } from '@/repository/orderRepository';
+import { getOrdersByUserId, getOrdersCountByUserId, OrderWithDetails } from '@/repository/orderRepository';
 import { getCustomerFromSession } from '@/lib/utils';
 
 export interface PaginatedOrdersResult {
-  orders: any[] | null;
+  orders: OrderWithDetails[] | null;
   totalCount: number;
   totalPages: number;
   currentPage: number;
