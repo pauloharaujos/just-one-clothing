@@ -114,3 +114,12 @@ export async function getOrdersByUserId(
     skip: offset
   });
 }
+
+/**
+ * Get total count of orders by user ID
+ */
+export async function getOrdersCountByUserId(userId: string): Promise<number> {
+  return await prisma.order.count({
+    where: { userId }
+  });
+}
