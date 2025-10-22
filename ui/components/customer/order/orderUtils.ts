@@ -44,7 +44,7 @@ export const formatCurrency = (amount: number) => {
 
 export const formatAddress = (address: Address) => {
   const parts = [
-    address.firstName + ' ' + address.lastName,
+    `${address.firstName} ${address.lastName}`,
     address.company,
     address.street1,
     address.street2,
