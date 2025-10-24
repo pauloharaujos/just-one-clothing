@@ -9,12 +9,12 @@ export default function CheckoutHeader() {
       <div className="mx-auto max-w-7xl px-4 py-4 sm:px-6 lg:px-12">
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center">
-            <span className="sr-only">Just One Dollar</span>
+            <span className="sr-only">Just One</span>
             <Image 
-              src="/just-one-dollar-logo.png" 
-              alt="Just One Dollar" 
-              width={120}
-              height={38}
+              src="/logo.svg" 
+              alt="Just One" 
+              width={200}
+              height={60}
               className="h-8 w-auto" 
             />
           </Link>
