@@ -15,6 +15,7 @@ interface HeaderProps {
 export default function Header({ categories, minicartItemCount }: HeaderProps) {
     const [mobileMenuOpen, setMobileMenuOpen] = React.useState(false);
     const [accountDropdownOpen, setAccountDropdownOpen] = React.useState(false);
+    const dropdownRef = React.useRef<HTMLDivElement>(null);
     const { data: session } = useSession();
     const isLoggedIn = session;
 
@@ -24,15 +25,15 @@ export default function Header({ categories, minicartItemCount }: HeaderProps) {
 
     React.useEffect(() => {
         const handleClickOutside = (event: MouseEvent) => {
-            if (accountDropdownOpen) {
-                const target = event.target as Element;
-                if (!target.closest('[data-dropdown]')) {
-                    setAccountDropdownOpen(false);
-                }
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setAccountDropdownOpen(false);
             }
         };
 
-        document.addEventListener('mousedown', handleClickOutside);
+        if (accountDropdownOpen) {
+            document.addEventListener('mousedown', handleClickOutside);
+        }
+
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, [accountDropdownOpen]);
 
@@ -94,7 +95,7 @@ export default function Header({ categories, minicartItemCount }: HeaderProps) {
                 </div>
                 <div className="hidden lg:flex items-center justify-end flex-1 gap-4">
                     {isLoggedIn ? (
-                        <div className="relative" data-dropdown>
+                        <div className="relative" ref={dropdownRef}>
                             <button
                                 onClick={() => setAccountDropdownOpen(!accountDropdownOpen)}
                                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-gray-900 hover:bg-indigo-50 hover:text-indigo-600 focus:outline-none transition-all duration-200"

@@ -14,7 +14,7 @@ export default function Page() {
                     </div>
                     <p className="text-[15px] text-white font-semibold pr-6 leading-relaxed">
                         🎉 Limited Time Offer! Enjoy 20% OFF your first purchase –
-                        <a href="javascript:void(0)" className="ml-1 underline hover:no-underline transition-all duration-200 font-bold">Shop Now!</a>
+                        <a href="/clothing" className="ml-1 underline hover:no-underline transition-all duration-200 font-bold">Shop Now!</a>
                     </p>
                 </div>
                 <div className="absolute right-0">
